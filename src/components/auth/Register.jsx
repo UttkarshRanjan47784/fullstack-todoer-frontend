@@ -29,6 +29,7 @@ export default function Register() {
     }
     let response = await axios.post(`http://localhost:5000/register`, user);
     localStorage.setItem(`todoer-user-token`, `${response.data}`);
+    console.log(localStorage.getItem(`todoer-user-token`))
   }
 
   let handleGoToLogin = (event) => {
