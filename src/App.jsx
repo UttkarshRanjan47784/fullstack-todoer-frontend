@@ -13,7 +13,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<LoginPage />} />
-          <Route path='/register' element={<RegisterPage />} />
+          <Route path='/register' element={<React.Suspense fallback="loading"><RegisterPage /></React.Suspense>} />
         </Routes>
       </BrowserRouter>
     </div>
