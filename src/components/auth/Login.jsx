@@ -6,7 +6,7 @@ export default function Login() {
 
     let [username, setUsername] = useState('');
     let [password, setPassword] = useState('');
-    let goToRegister = useNavigate()
+    let navigate = useNavigate()
 
     let handleUsernameChange = (event) => {
         setUsername(event.target.value);
@@ -19,7 +19,7 @@ export default function Login() {
     let handleLogin = async (event) => {
         event.preventDefault();
         if (username.length == 0 || password.length == 0){
-            alert(`Please Credentials!`);
+            alert(`Please Enter The Credentials!`);
             return;
         }
         let user = {
@@ -27,13 +27,15 @@ export default function Login() {
             password : password
         }
         let response = await axios.post(`http://localhost:5000/login`, user);
-        localStorage.setItem(`todoer-user-token`, `${response.data}`);
-        console.log(localStorage.getItem(`todoer-user-token`));
+        if (response.data == true)
+            navigate('/home');
+        else
+            alert(`${response.data}`)
     }
 
     let handleGoToRegister = (event) => {
         event.preventDefault();
-        goToRegister(`/register`);
+        navigate(`/register`);
     }
 
   return (

@@ -7,7 +7,7 @@ export default function Register() {
   let [username, setUsername] = useState('');
   let [password, setPassword] = useState('');
 
-  const goToLogin = useNavigate()
+  const navigate = useNavigate()
 
   let handleUsernameChange = (event) => {
       setUsername(event.target.value);
@@ -27,14 +27,21 @@ export default function Register() {
         username : username,
         password : password
     }
-    let response = await axios.post(`http://localhost:5000/register`, user);
-    localStorage.setItem(`todoer-user-token`, `${response.data}`);
-    console.log(localStorage.getItem(`todoer-user-token`))
+    try {
+      let response = await axios.post(`http://localhost:5000/register`, user);
+      if (response.data.stat == `fail`)
+        throw new Error(response.data.msg)
+      localStorage.setItem(`todoer-user-token`, `${response.data.msg}`);
+      alert(`Success`);
+      navigate(`/home`)
+    } catch (error){
+      alert(error.message)
+    }
   }
 
   let handleGoToLogin = (event) => {
     event.preventDefault();
-    goToLogin(`/`);
+    navigate(`/`);
   }
 
 return (
