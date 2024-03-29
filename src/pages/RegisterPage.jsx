@@ -13,7 +13,7 @@ export default function RegisterPage() {
   const [activeUser, setActiveUser] = useRecoilState(currentUser)
 
   async function verifyUser(){
-    console.log(`LOGIN PAGE : No active user, getting auth token`)
+    console.log(`REGISTER PAGE : No active user, getting auth token`)
     let token = localStorage.getItem(`todoer-user-token`);
     if (token == null){
       return
@@ -39,7 +39,7 @@ export default function RegisterPage() {
     if (activeUser.isLoggedIn == false)
       verifyUser();
     else
-      alert(`Welcome ${activeUser.username}`)
+      navigate("/home");
   }, [])
 
   return (

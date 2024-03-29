@@ -31,7 +31,7 @@ export default function LoginPage() {
         username : response.data.msg,
         isLoggedIn : true
       })
-      navigate("/home")
+      navigate("/home");
     }
   }
 
@@ -39,7 +39,7 @@ export default function LoginPage() {
     if (activeUser.isLoggedIn == false)
       verifyUser();
     else
-      alert(`Welcome ${activeUser.username}`)
+      navigate("/home");
   }, [])
 
   return (

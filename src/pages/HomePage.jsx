@@ -13,12 +13,11 @@ export default function HomePage() {
   const [activeUser, setActiveUser] = useRecoilState(currentUser)
 
   async function verifyUser(){
-    console.log(`No active user, getting auth token`)
     let token = localStorage.getItem(`todoer-user-token`);
     if (token == null){
       alert(`Error : Unauthorized`)
       navigate("/")
-      return
+      return false
     }
     let response = await axios.get(`http://localhost:5000/home`, {
         headers : {
@@ -28,13 +27,14 @@ export default function HomePage() {
     if (response.data.stat == false){
       alert(`Error : Unauthorized`)
       navigate("/")
-      return
+      return false
     }
     if (response.data.stat == true){
       setActiveUser({
         username : response.data.msg,
         isLoggedIn : true
       })
+      return true
     }
   }
 
@@ -42,13 +42,12 @@ export default function HomePage() {
     if (activeUser.isLoggedIn == false)
       verifyUser();
     else
-      alert(`Welcome ${activeUser.username}`)
+      alert(`HOME : Welcome ${activeUser.username}`)    
   }, [])
 
   return (
     <div>
         <HomeHeader />
-        {/* name={username} */}
         <ToDoWrapper />
     </div>
   )
