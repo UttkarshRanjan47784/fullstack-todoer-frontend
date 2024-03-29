@@ -27,8 +27,10 @@ export default function Login() {
             password : password
         }
         let response = await axios.post(`http://localhost:5000/login`, user);
-        if (response.data == true)
+        if (response.data[`msg`] == true){
+            localStorage.setItem(`todoer-user-token`, response.data["token"])
             navigate('/home');
+        }
         else
             alert(`${response.data}`)
     }
