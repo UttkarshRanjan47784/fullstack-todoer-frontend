@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import { useRecoilState } from "recoil"
@@ -6,11 +6,14 @@ import { useRecoilState } from "recoil"
 import HomeHeader from '../components/home/HomeHeader'
 import ToDoWrapper from '../components/home/ToDoWrapper'
 import { currentUser } from '../store/atoms';
+import WeatherBoard from '../components/home/WeatherBoard';
+import TodoForm from '../components/home/TodoForm';
 
 export default function HomePage() {
 
   const navigate = useNavigate()
   const [activeUser, setActiveUser] = useRecoilState(currentUser)
+  const [count, setCount] = useState(0)
 
   async function verifyUser(){
     let token = localStorage.getItem(`todoer-user-token`);
@@ -48,7 +51,13 @@ export default function HomePage() {
   return (
     <div>
         <HomeHeader />
+        <WeatherBoard />
+        <TodoForm />
         <ToDoWrapper />
+        <button className='bg-orange-400 w-20'
+        onClick={() => {
+          setCount((p) => p+1)
+        }}>{count}</button>
     </div>
   )
 }
