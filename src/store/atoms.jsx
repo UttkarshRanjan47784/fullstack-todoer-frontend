@@ -9,4 +9,4 @@ const currentUser = atom({
 });
 
 
-export { user }
+export { currentUser }
