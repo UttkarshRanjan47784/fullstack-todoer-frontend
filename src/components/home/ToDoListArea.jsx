@@ -2,11 +2,13 @@ import React, { useEffect } from 'react'
 import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
 import axios from 'axios';
 
-import { todoListList } from '../../store/atoms';
+import { todoListList, todos } from '../../store/atoms';
 import ToDoList from './ToDoList'
 
 export default function ToDoListArea() {
-  
+
+  let [taskList, setTaskList] = useRecoilState(todoListList); 
+  let setTodos = useSetRecoilState(todos)
 
   async function retrieveTodoLists(){
     let token = localStorage.getItem(`todoer-user-token`)
@@ -15,16 +17,24 @@ export default function ToDoListArea() {
         authorization : token
       }
     });
-    let arr = response.data.map((item) => { return item.todoListName})
-    console.log(arr)
+    console.log(response.data)
+    let arr = []
+    let dict = {}
+    response.data.forEach((item) => {
+      let listName = item.todoListName;
+      let listOfTasks = item.taskList;
+      arr.push(item.todoListName);
+      dict[listName] = listOfTasks
+    })
+    console.log(arr);
+    console.log(dict);
     setTaskList(arr);
+    setTodos(dict);
   }
 
   useEffect(()=>{
     retrieveTodoLists()
   }, [])
-
-  let [taskList, setTaskList] = useRecoilState(todoListList);
 
   const renderTaskLists = taskList.map((item) => {
       return <ToDoList listTitle={item} key={`${item}List`} />

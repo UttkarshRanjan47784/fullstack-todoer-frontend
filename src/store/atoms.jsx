@@ -11,7 +11,11 @@ const currentUser = atom({
 const todoListList = atom({
     default: [],
     key : "todolistlist"
+});
+
+const todos = atom({
+    key : "todos",
+    default : {}
 })
 
-
-export { currentUser, todoListList }
+export { currentUser, todoListList, todos }

@@ -13,7 +13,6 @@ import { todoListList } from '../../store/atoms';
   const handleTaskListTitle = (event) => { setTaskListTitle(event.target.value) }
 
   const handleAdd = async (event) => {
-
     event.preventDefault();
     if (taskListTitle.length == 0){
       alert(`Enter Task List Title`);
@@ -75,7 +74,6 @@ import { todoListList } from '../../store/atoms';
             authorization : token
           }
         });
-        console.log(response.data)
       } catch (error) {
         //rollback frontend change
         console.log(error.message);
