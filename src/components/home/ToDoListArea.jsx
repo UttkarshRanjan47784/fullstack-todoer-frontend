@@ -1,37 +1,38 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
+import axios from 'axios';
+
+import { todoListList } from '../../store/atoms';
+import ToDoList from './ToDoList'
 
 export default function ToDoListArea() {
+  
 
-    let content = [
-        <li key='a'>This course is made for people who want to learn DSA from A to Z for free in a well-organized and structured manner.</li>,
-        <li key='b'>This course is made for people who want to learn DSA from A to Z for free in a well-organized and structured manner.</li>,
-        <li key='c'>This course is made for people who want to learn DSA from A to Z for free in a well-organized and structured manner.</li>,
-        <li key='d'>This course is made for people who want to learn DSA from A to Z for free in a well-organized and structured manner.</li>,
-        <li key='e'>This course is made for people who want to learn DSA from A to Z for free in a well-organized and structured manner.</li>,
-        
-    ]
+  async function retrieveTodoLists(){
+    let token = localStorage.getItem(`todoer-user-token`)
+    let response = await axios.get(`http://localhost:5000/todolists`, {
+      headers : {
+        authorization : token
+      }
+    });
+    let arr = response.data.map((item) => { return item.todoListName})
+    console.log(arr)
+    setTaskList(arr);
+  }
 
-    let showBigger = (event) => {
-        // event.target.className = `bg-purple-500 row-span-3 p-3`
-        // event.target.innerText = content
-        console.log(event.target.innerText.length)
-    }
+  useEffect(()=>{
+    retrieveTodoLists()
+  }, [])
 
-    let showSmaller = (event) => {
-        event.target.className = `bg-purple-500 row-span-2 p-3`
-        event.target.innerText = content.slice(0, 50)
-    }
+  let [taskList, setTaskList] = useRecoilState(todoListList);
 
-    // onMouseOver={showBigger} onMouseLeave={showSmaller}
+  const renderTaskLists = taskList.map((item) => {
+      return <ToDoList listTitle={item} key={`${item}List`} />
+  })
 
   return (
     <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 p-3'>
-        {/* <div className='bg-purple-500 p-3 h-64 overflow-auto'>1</div>
-        <div className='bg-purple-500 p-3 h-64 overflow-auto'>2</div>
-        <div className='bg-purple-500 p-3 h-64 overflow-auto'>3</div>
-        <div className='bg-purple-500 p-3 h-64 overflow-auto'>4</div>
-        <div className='bg-purple-500 p-3 h-64 overflow-auto'>5</div>
-        <div className='bg-purple-500 p-3 h-64 overflow-auto'>6</div> */}
+        {renderTaskLists}
     </div>
   )
 }

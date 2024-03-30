@@ -8,5 +8,10 @@ const currentUser = atom({
     key : "currentUser"
 });
 
+const todoListList = atom({
+    default: [],
+    key : "todolistlist"
+})
 
-export { currentUser }
+
+export { currentUser, todoListList }

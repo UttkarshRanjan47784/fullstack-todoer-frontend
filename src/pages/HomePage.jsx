@@ -7,18 +7,18 @@ import HomeHeader from '../components/home/HomeHeader'
 import ToDoWrapper from '../components/home/ToDoWrapper'
 import { currentUser } from '../store/atoms';
 import WeatherBoard from '../components/home/WeatherBoard';
-import TodoForm from '../components/home/TodoForm';
+import TodoListForm from '../components/home/TodoListForm';
 
 export default function HomePage() {
 
   const navigate = useNavigate()
   const [activeUser, setActiveUser] = useRecoilState(currentUser)
-  const [count, setCount] = useState(0)
+  const [render, setRender] = useState(false)
 
   async function verifyUser(){
     let token = localStorage.getItem(`todoer-user-token`);
     if (token == null){
-      alert(`Error : Unauthorized`)
+      alert(`Error : Unauthorized No Token`)
       navigate("/")
       return false
     }
@@ -28,7 +28,8 @@ export default function HomePage() {
         }
     })
     if (response.data.stat == false){
-      alert(`Error : Unauthorized`)
+      alert(`Error : Unauthorized User Not Found`)
+      console.log(response.data.msg)
       navigate("/")
       return false
     }
@@ -41,23 +42,27 @@ export default function HomePage() {
     }
   }
 
-  useEffect (()=>{
-    if (activeUser.isLoggedIn == false)
-      verifyUser();
+  async function loadHome(){
+    if (activeUser.isLoggedIn == false){
+      if(await verifyUser() == true){
+        console.log(`user verified`)
+        setRender(true);
+      }
+    }
     else
       alert(`HOME : Welcome ${activeUser.username}`)    
+  }
+
+  useEffect (()=>{
+    loadHome()
   }, [])
 
   return (
-    <div>
-        <HomeHeader />
-        <WeatherBoard />
-        <TodoForm />
-        <ToDoWrapper />
-        <button className='bg-orange-400 w-20'
-        onClick={() => {
-          setCount((p) => p+1)
-        }}>{count}</button>
-    </div>
+    (render)?<div>
+    <HomeHeader />
+    <WeatherBoard />
+    <TodoListForm />
+    <ToDoWrapper />
+</div>:<div>Verifying User...</div>
   )
 }

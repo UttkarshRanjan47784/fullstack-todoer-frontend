@@ -16,12 +16,11 @@ const WeatherBoard = memo(()=>{
 
     async function getData() {
         let response = await axios.get(`http://localhost:5000/weather`);
-        console.log(response.data);
         setData(response.data);
     }
 
     useEffect(()=>{
-        getData();
+        // getData();
     }, [])
 
   return (
