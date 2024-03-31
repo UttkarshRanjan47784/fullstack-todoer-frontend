@@ -20,7 +20,7 @@ export default function Register() {
   let handleRegister = async (event) => {
     event.preventDefault();
     if (username.length == 0 || password.length == 0){
-        alert(`Please Credentials!`);
+        alert(`Please Enter Credentials!`);
         return;
     }
     let user = {
