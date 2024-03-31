@@ -1,5 +1,4 @@
 import React, { memo, useEffect, useState } from 'react'
-import axios from 'axios'
 import { useRecoilValue } from "recoil"
 
 import ToDoItemForm from './ToDoItemForm';
@@ -11,7 +10,7 @@ import ToDoItem from './ToDoItem.jsx';
   const listOfTasks = useRecoilValue(todos)[`${props.listTitle}`];
 
   let renderTasks = listOfTasks.map((item) => {
-    return <ToDoItem key={`${props.listTitle}${item.taskName}`}  taskName={item.taskName} stat={item.taskStatus}/>
+    return <ToDoItem key={`${props.listTitle}${item.taskName}`} listName={props.listTitle}  taskName={item.taskName} stat={item.taskStatus}/>
   });
 
   return (

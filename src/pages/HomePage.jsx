@@ -44,13 +44,18 @@ export default function HomePage() {
 
   async function loadHome(){
     if (activeUser.isLoggedIn == false){
-      if(await verifyUser() == true){
+      console.log(`Hehe`)
+      let temp = await verifyUser()
+      console.log(temp)
+      if(temp == true){
         console.log(`user verified`)
         setRender(true);
       }
     }
-    else
-      alert(`HOME : Welcome ${activeUser.username}`)    
+    else{
+      setRender(true)
+      alert(`HOME : Welcome ${activeUser.username}`)
+    }  
   }
 
   useEffect (()=>{

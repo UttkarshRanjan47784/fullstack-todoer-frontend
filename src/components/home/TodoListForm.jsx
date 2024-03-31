@@ -1,14 +1,13 @@
 import React, { memo, useState } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import axios from 'axios';
 
-import { todoListList } from '../../store/atoms';
+import { todos } from '../../store/atoms';
 
  const TodoListForm = memo(()=>{
 
   const [taskListTitle, setTaskListTitle] = useState(``);
-
-  const [taskList, setTaskList] = useRecoilState(todoListList);
+  const [superList, setSuperList] = useRecoilState(todos);
 
   const handleTaskListTitle = (event) => { setTaskListTitle(event.target.value) }
 
@@ -18,36 +17,34 @@ import { todoListList } from '../../store/atoms';
       alert(`Enter Task List Title`);
       return;
     }
-    if (taskList.filter((item)=>{ return (item == taskListTitle) }).length == 0){
-      //frontend update (Optimistic Rendering)
-      setTaskList((prev) => {
-        let arr = prev;
-        arr = [...arr, taskListTitle];
-        return [...arr]
-      });
-      try {
-        //backend update
-        let token = localStorage.getItem(`todoer-user-token`)
-        let response = await axios.post(`http://localhost:5000/addtodolist`, {
-            todoListName : taskListTitle
-          },{
-          headers : {
-            authorization : token
-          }
-        });
-        console.log(response.data)
-      } catch (error) {
-        //rollback frontend change
-        console.log(error.message);
-        alert(`Operation Failed`);
-        setTaskList((prev) => {
-          let arr = prev;
-          arr = arr.filter((item) => {
-            return item != taskListTitle
-          });
-          return [...arr]
-        });
+    //saving old value
+    let oldValue = superList;
+    if (taskListTitle in superList){
+      alert(`Duplicate Task List Names not allowed`);
+      return;
+    }
+    //frontend update (Optimistic Rendering)
+    setSuperList((prev) => {
+      let temp = {...prev};
+      temp[taskListTitle] = [];
+      return {...temp}
+    })
+    try {
+      //backend update
+      let token = localStorage.getItem(`todoer-user-token`)
+      let response = await axios.post(`http://localhost:5000/addtodolist`, {
+          todoListName : taskListTitle
+        },{
+        headers : {
+          authorization : token
+        }
       }
+      );
+    } catch (error) {
+      //rollback frontend change
+      console.log(error.message);
+      alert(`Operation Failed`);
+      setSuperList(oldValue);
     }
   }
 
@@ -57,34 +54,36 @@ import { todoListList } from '../../store/atoms';
       alert(`Enter Task List Title`);
       return;
     }
-    if (taskList.filter((item)=>{ return (item == taskListTitle) }).length != 0){
-      //frontend update (Optimistic Rendering)
-      setTaskList((prev) => {
-        let arr = prev;
-        arr = arr.filter((item) => { return item != taskListTitle })
-        return [...arr]
-      });
-      try {
-        //backend update
-        let token = localStorage.getItem(`todoer-user-token`)
-        let response = await axios.post(`http://localhost:5000/deletetodolist`, {
-            todoListName : taskListTitle
-          },{
-          headers : {
-            authorization : token
-          }
-        });
-      } catch (error) {
-        //rollback frontend change
-        console.log(error.message);
-        alert(`Operation Failed`);
-        setTaskList((prev) => {
-          let arr = prev;
-          arr = [...arr, taskListTitle];
-          return [...arr]
-        });
-      }
+    //saving old value
+    let oldValue = superList;
+    console.log(oldValue);
+    if (!(taskListTitle in superList)){
+      alert(`Task List does not exist`);
+      return;
     }
+    //frontend update (Optimistic Rendering)
+    setSuperList((prev) => {
+      let temp = {...prev}
+      delete temp[`${taskListTitle}`];
+      return {...temp}
+    })
+    try {
+      //backend update
+      let token = localStorage.getItem(`todoer-user-token`)
+      let response = await axios.post(`http://localhost:5000/deletetodolist`, {
+          todoListName : taskListTitle
+        },{
+        headers : {
+          authorization : token
+        }
+      });
+    } catch (error) {
+      //rollback frontend change
+      console.log(error.message);
+      alert(`Operation Failed`);
+      setSuperList(oldValue);
+    }
+    setTaskListTitle(``)
   }
 
   return (

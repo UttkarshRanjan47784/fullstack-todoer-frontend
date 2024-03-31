@@ -26,9 +26,7 @@ const ToDoItemForm = memo((props) => {
       let newList = [...listOfTasks, { taskName : newTask, taskStatus : false }]
       setSuperList((prev) => {
         let temp = {...prev};
-        console.log(temp[props.listName])
         temp[props.listName] = [...newList];
-        console.log(temp);
         return temp;
       })
       try {
@@ -36,12 +34,13 @@ const ToDoItemForm = memo((props) => {
       } catch (error) {
         //rollback frontend changes
       }
+      setNewTask(``)
   }
 
   return (
     <form className='grid grid-cols-5 px-3 gap-2'>
           <input className='text-center col-span-4'
-          type='text' placeholder='New Task' onChange={handleChange}></input>
+          type='text' placeholder='New Task' value={newTask} onChange={handleChange}></input>
           <button className='bg-orange-400 hover:bg-orange-500 py-1 px-3 rounded-full col-span-1'
           onClick={handleNewTask} type='submit'>ADD</button>
     </form>
