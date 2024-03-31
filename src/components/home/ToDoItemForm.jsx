@@ -11,7 +11,10 @@ const ToDoItemForm = memo((props) => {
   
   let handleChange = (event) => { setNewTask(event.target.value) }
 
-  let handleNewTask = (event) => {
+  let handleNewTask = async (event) => {
+      //saving old value
+      let oldValue = {...superList};
+
       event.preventDefault();
       if (newTask.length == 0){
           alert(`Enter Task List Title`);
@@ -31,10 +34,20 @@ const ToDoItemForm = memo((props) => {
       })
       try {
         //backend Update
+        let token = localStorage.getItem(`todoer-user-token`)
+        let temp = { todoListName : props.listName, taskTitle : newTask, taskStatus : false };
+        let response = await axios.post(`http://localhost:5000/addtask`, temp, {
+          headers : {
+            authorization : token
+          }
+        });
+        console.log(response.data)
       } catch (error) {
         //rollback frontend changes
+        alert(`Operation Failed!`);
+        setSuperList(oldValue);
       }
-      setNewTask(``)
+      setNewTask(``);
   }
 
   return (

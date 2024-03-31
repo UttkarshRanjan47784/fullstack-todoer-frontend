@@ -1,5 +1,6 @@
 import React, { memo } from 'react'
 import { useRecoilState } from "recoil"
+import axios from "axios"
 
 import { todos } from '../../store/atoms.jsx'
 
@@ -7,7 +8,7 @@ const ToDoItem = memo((props) => {
 
   let [superList, setSuperList] = useRecoilState(todos)
 
-  let handleStatChange = () => {
+  let handleStatChange = async () => {
     // saving old value
     let oldSuperList = {...superList}
     //frontend Update (Optimistic Rendering)
@@ -29,12 +30,21 @@ const ToDoItem = memo((props) => {
     });
     try {
       //backend Update
+      let token = localStorage.getItem(`todoer-user-token`)
+      let something = { todoListName : props.listName, newList : newArr }
+      let response = await axios.post(`http://localhost:5000/updatetask`, something, {
+        headers : {
+          authorization : token
+        }
+      });
     } catch (error) {
       //rollback frontend changes
+      alert(`Operation Failed : ${error.message}`);
+      setSuperList(oldSuperList);
     }
   }
 
-  let handleDelete = () => {
+  let handleDelete = async () => {
     // saving old value
     let oldSuperList = {...superList}
     //frontend Update (Optimistic Rendering)
@@ -48,8 +58,17 @@ const ToDoItem = memo((props) => {
     });
     try {
       //backend Update
+      let token = localStorage.getItem(`todoer-user-token`)
+      let something = { todoListName : props.listName, newList : newArr }
+      let response = await axios.post(`http://localhost:5000/deletetask`, something, {
+        headers : {
+          authorization : token
+        }
+      });
     } catch (error) {
       //rollback frontend changes
+      alert(`Operation Failed : ${error.message}`);
+      setSuperList(oldSuperList);
     }
   }
 
