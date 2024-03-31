@@ -20,7 +20,7 @@ const WeatherBoard = memo(()=>{
     }
 
     useEffect(()=>{
-        // getData();
+        getData();
     }, [])
 
   return (
