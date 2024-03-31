@@ -12,13 +12,14 @@ import { todos } from '../../store/atoms';
   const handleTaskListTitle = (event) => { setTaskListTitle(event.target.value) }
 
   const handleAdd = async (event) => {
+
     event.preventDefault();
     if (taskListTitle.length == 0){
       alert(`Enter Task List Title`);
       return;
     }
     //saving old value
-    let oldValue = superList;
+    let oldValue = {...superList};
     if (taskListTitle in superList){
       alert(`Duplicate Task List Names not allowed`);
       return;
@@ -31,21 +32,22 @@ import { todos } from '../../store/atoms';
     })
     try {
       //backend update
-      let token = localStorage.getItem(`todoer-user-token`)
-      let response = await axios.post(`http://localhost:5000/addtodolist`, {
-          todoListName : taskListTitle
+      let token = localStorage.getItem(`todoer-user-token`);
+      await axios.post(`http://localhost:5000/addtodolist`, {
+          todoListName : taskListTitle,
+          taskList : []
         },{
         headers : {
           authorization : token
         }
-      }
-      );
+      });
     } catch (error) {
       //rollback frontend change
       console.log(error.message);
       alert(`Operation Failed`);
       setSuperList(oldValue);
     }
+    setTaskListTitle(``)
   }
 
   const handleDelete = async (event) => {
@@ -55,7 +57,7 @@ import { todos } from '../../store/atoms';
       return;
     }
     //saving old value
-    let oldValue = superList;
+    let oldValue = {...superList};
     console.log(oldValue);
     if (!(taskListTitle in superList)){
       alert(`Task List does not exist`);

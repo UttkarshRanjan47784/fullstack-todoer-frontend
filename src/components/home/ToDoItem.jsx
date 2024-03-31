@@ -65,6 +65,7 @@ const ToDoItem = memo((props) => {
           authorization : token
         }
       });
+      console.log(response)
     } catch (error) {
       //rollback frontend changes
       alert(`Operation Failed : ${error.message}`);
